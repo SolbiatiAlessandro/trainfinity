@@ -19,6 +19,12 @@ class Building extends Phaser.GameObjects.Sprite {
 	} else {
 		this.level = level;
 	}
+
+	  this.cnt = 0;
+	  this.activated = false;
+
+	this.coal_earned = [];
+	  this.cpm = 0;
 	
 	this._scene = scene;
 	this.depth = 3;
@@ -49,8 +55,22 @@ class Building extends Phaser.GameObjects.Sprite {
 		this.buildingText = buildingText;
 		this._setText();
 	}
+  }
 
+  earn_coal(coal){
+	  this.activated = true;
+	  this.inventory.coal += coal
+	  this.coal_earned.push({coal: coal, time: Date.now()});
+  }
 
+  coal_per_minute(){
+	  return this.coal_earned
+		  .filter(mt => Date.now() - mt.time < 60 * 1000)
+		  .map(mt => mt.coal)
+		  .reduce((a, b) => a + b, 0)
+  }
+
+  update(){
   }
 
   factory_coalForLevel(level){
@@ -109,12 +129,39 @@ class Building extends Phaser.GameObjects.Sprite {
 		  _text += "coal: " + Math.floor(this.inventory.coal) + "\n";
 	  }
 	
+	  if (this.activated == false && this.isFactory()){
+		this.buildingText.setStyle({ color: 'white', backgroundColor: 'grey' });
+	  }
 	  this.buildingText.setText(_text);
   }
 
   preUpdate(time, delta){
 	  super.preUpdate(time, delta);
 	  this.timer += delta;
+	  if (this.isFactory()){
+		  this.cpm = this.coal_per_minute();
+		  if (this.timer > 5000){
+			  this._scene.player.log(this.name + " is receiving " + this.cpm + "coal per minute");
+			  if (this.cpm > this._scene.player.cpm_target){
+				  this._scene.player.log(this.name + " receiving enough coal!");
+			  }
+			  if(this.activated == true){
+			  this.inventory.coal -= 1;
+
+			  }
+		  }
+
+		  if (this.cpm == 0 && this.activated == true){
+			this.buildingText.setStyle({ color: 'white', backgroundColor: 'red' });
+		  } else {
+			this.buildingText.setStyle({ color: 'black', backgroundColor: 'white' })
+		  }
+
+		  if (this.inventory.coal == 0 && this.activated == true){
+			  this._scene.player.log(this.name + " finished the coal! you lost");
+			  throw "YOU LOST"
+		  }
+	  }
 	  if (this.timer > 5000){
 		  var extractedCoal = this.coalGenerationFactor * (this.level + 1);
 		  this.inventory.coal += extractedCoal

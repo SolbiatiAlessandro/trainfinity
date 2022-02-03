@@ -67,6 +67,7 @@ class Locomotive extends Phaser.GameObjects.Sprite {
 	  let pathProgressDelta = pixelsSinceLast / length;
 	  this.pathProgress += pathProgressDelta;
 
+		/*
 	  if (this.fuel <= 0 && this.lost == false){
 		  this.lost == true;
 		  this.owner.log(">["+this.name+"] run out of fuel")
@@ -74,7 +75,7 @@ class Locomotive extends Phaser.GameObjects.Sprite {
 		  //this.owner.saveLeaderboardScore():
 		  throw "YOU LOST THE GAME!"
 		  //location.reload();
-	  }
+	  }*/
 
 
 	  if (this.pathProgress < 1 && this.fuel > 0) {
@@ -189,7 +190,7 @@ class Locomotive extends Phaser.GameObjects.Sprite {
 		  coal = 0
 	  }
 	  coal = Math.min(coal, this.fuel);
-	  station.inventory.coal += coal;
+	  station.earn_coal(coal);
 	  var prevFuel = this.fuel
 	  this.fuel -= coal;
 	  this.owner.earn_coal(coal);

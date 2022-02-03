@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+inventory.<!DOCTYPE html>
 <html>
 <head>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -255,7 +255,7 @@ if (station.isFactory()) {
     this.load.image('instructions_train', 'assets/instructions_train.png');
     this.load.image('instructions_first_goal', 'assets/instructions_first_goal.png');
     this.load.image('arrow_down', 'assets/arrow_down.png');
-	  this.load.audio('music', 'assets/music.mp3')
+	  //this.load.audio('music', 'assets/music.m4a')
 
     this.load.plugin('rexmodalplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexmodalplugin.min.js', true);
   }
@@ -301,7 +301,7 @@ if (station.isFactory()) {
     this.deleter = new Deleter(this.grid, this.buildingGroup, this);
     this.trainBuilder = new TrainBuilder(this.grid, this.locomotiveGroup, this);
 
-	game.sound.play('music')
+	//game.sound.play('music')
 
 
     this.physics.add.overlap(this.buildingGroup, this.buildingGroup, buildingOnBuilding, null, this);

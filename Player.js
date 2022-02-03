@@ -84,8 +84,8 @@ class Player {
 
 
 
-	  this.level = 0;
-	  this.cpm_target = 0;
+	  this.level = 1;
+	  this.cpm_target = 10;
 
 	  this.create()
 
@@ -122,8 +122,8 @@ class Player {
 
   levelUp(){
 	  this.level += 1;
-	  this.cpm_target += 100;
-	  this.goalText.setText("⭐ Bring "+this.cpm_target+" units of coal/minute to the factories ⭐");
+	  //this.cpm_target += 100;
+	  this.goalText.setText("⭐ Bring "+this.cpm_target+" units of coal/minute to" + this.level+ " factories ⭐");
 	  this.saveLeaderboardScore()
   }
 
@@ -156,6 +156,12 @@ class Player {
 		  .reduce((a, b) => a + b, 0)
   }
 
+  levelUpCondition(){
+	  return this.ownedBuildings.filter(b => b.isFactory()).every(b => b.cpm  >= this.cpm_target)
+  }
+
+ 
+
   update(){ //  called around 50 times per second
 	  var cpm = this.coal_per_minute().toFixed(1) ;
 	  var statusText = "Railway Engineer " +(this.level)+ " | "+this.coal.toFixed(0)+" coal";
@@ -164,7 +170,7 @@ class Player {
 	  }
 	  this.moneyPMText.setText(statusText);
 	  this.goalText.x = this.moneyPMText.width;
-	  if (this.level > 0 && cpm > this.cpm_target){
+	  if (this.level > 0 && this.levelUpCondition()){
 		  this.levelCompleted(cpm);
 	  }
 
@@ -178,6 +184,8 @@ class Player {
 		killTree.kill();
 	  }
 	}
+
+
 
 	  this.tutorial.update();
 
