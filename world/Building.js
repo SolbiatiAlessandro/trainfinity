@@ -151,10 +151,10 @@ class Building extends Phaser.GameObjects.Sprite {
 			  }
 		  }
 
-		  if (this.cpm == 0 && this.activated == true){
+		  if (this.activated == true && (this.cpm == 0 || this.inventory.coal < 10)){
 			this.buildingText.setStyle({ color: 'white', backgroundColor: 'red' });
 		  } else {
-			this.buildingText.setStyle({ color: 'black', backgroundColor: 'white' })
+			  this.buildingText.setStyle({ color: 'black', backgroundColor: 'rgba(0, 0, 0, 0)' })
 		  }
 
 		  if (this.inventory.coal == 0 && this.activated == true){
