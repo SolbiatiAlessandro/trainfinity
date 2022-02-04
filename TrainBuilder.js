@@ -26,10 +26,12 @@ class TrainBuilder {
 	this.trainBuilderText.depth = 1004
 	this.trainBuilderText.visible = false
 	this.scene.add.existing(this.trainBuilderText)
+	this.trainCost = 100;
 
   }
 
   newTrain(level){
+	  throw "DEPRECATED"
 	  this.scene._locomotiveBuilder.visible = true
 	  this.trainBuilderText.setPosition(this.scene._locomotiveBuilder.x + 20,  
 	  this.scene._locomotiveBuilder.y)
@@ -40,8 +42,12 @@ class TrainBuilder {
   }
 
   pointerDown(position){
+	  if (this.scene.player.currency < this.trainCost){
+		  return;
+	  }
 	  for(const [key, value] of Object.entries(this.scene.grid._buildings)){
 		  if(value.name == "RailSegment" && !this.trainCreated){
+			this.scene.player.currency -= this.trainCost;
 			var trainCapacity = this.level + 1
 			let locomotivePosition = {x: value.x, y: value.y}
 			let wagonPositions = Array(this.level + 1).fill(locomotivePosition)
@@ -58,10 +64,13 @@ class TrainBuilder {
 			}
 
 			this.trainCreated = true;
+			/*
 		    this.scene._locomotiveBuilder.visible = false;
 		    this.trainBuilderText.visible = false;
+			*/
 		  }
 	  }
+	  this.trainCreated = false;
   }
 
   pointerUp(){}

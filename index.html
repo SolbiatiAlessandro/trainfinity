@@ -331,8 +331,10 @@ if (station.isFactory()) {
         // Make the built objects opaque and move them from the temporary array
         // to the permanent collection
         for (let object of this.temporaryGameObjects) {
-          object.alpha = 1.0;
-          object.setActive(true);
+		  if(this.selectedActionController.objectCreatedCallback(object)){
+			  object.alpha = 1.0;
+			  object.setActive(true);
+		  }
         }
         this.temporaryGameObjects = [];
       }

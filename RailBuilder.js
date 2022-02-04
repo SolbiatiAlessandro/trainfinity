@@ -11,6 +11,8 @@ class RailBuilder extends ActionController{
     super(grid, physicsGroup, scene);
     this.invalidPositions = [];
 	this.road = null
+	this.railPrice = 1;
+	this.game = scene;
   }
 
   _positionsToMarkInvalid() {
@@ -36,6 +38,16 @@ class RailBuilder extends ActionController{
     }
 	
 	
+  }
+
+  objectCreatedCallback(rail){
+	  if (this.game.player.currency > 1){
+		  this.game.player.currency -= 1;
+		  return true;
+	  } else {
+		  return false;
+	  }
+
   }
 
 }

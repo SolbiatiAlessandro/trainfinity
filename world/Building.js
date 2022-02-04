@@ -74,7 +74,7 @@ class Building extends Phaser.GameObjects.Sprite {
   }
 
   factory_coalForLevel(level){
-	  return 100 * (10 ** level);
+	  return 100 * (2 ** level);
   }
 
   getName(){
@@ -135,6 +135,12 @@ class Building extends Phaser.GameObjects.Sprite {
 	  this.buildingText.setText(_text);
   }
 
+  _factory_BurnCoal(){
+	  // called every 5 secs
+	 this.inventory.coal -= this.level + 1;
+	 this._scene.player.currency += this.level + 1; 
+  }
+
   preUpdate(time, delta){
 	  super.preUpdate(time, delta);
 	  this.timer += delta;
@@ -146,8 +152,7 @@ class Building extends Phaser.GameObjects.Sprite {
 				  this._scene.player.log(this.name + " receiving enough coal!");
 			  }
 			  if(this.activated == true){
-			  this.inventory.coal -= 1;
-
+				  this._factory_BurnCoal();
 			  }
 		  }
 
@@ -157,7 +162,7 @@ class Building extends Phaser.GameObjects.Sprite {
 			  this.buildingText.setStyle({ color: 'black', backgroundColor: 'rgba(0, 0, 0, 0)' })
 		  }
 
-		  if (this.inventory.coal == 0 && this.activated == true){
+		  if (this.inventory.coal <= 0 && this.activated == true){
 			  this._scene.player.log(this.name + " finished the coal! you lost");
 			  throw "YOU LOST"
 		  }
@@ -169,41 +174,12 @@ class Building extends Phaser.GameObjects.Sprite {
 		  this._setText();
 		  this.timer = 0;
 
-		  // LEVEL 0 -> 1 WALKTHROUGH 
-		  if ( this.isFactory() && 
-			  this.inventory.coal >= 100 &&
-			  this._scene.player.level == 0){
-			  this._scene.player.log(">["+this.name+"] is now a level 1 factory! It generated a level 0 mine")
-			  this.level += 1;
-			  this.setTexture('factory2')
-			  var reward = this._scene.player.levelUp();
-			  this._scene.player.moneyText.visible = constants.money_enabled;
-			  this._scene.player.moneyPMText.visible = true;
-			  this._scene._creator._createMines(1, 0);
-			  var success_text = "Wow! You moved 100 unites of coal to the factory. The factory has been using this coal to drill a new coal mine that is now ready for you to use! ";
-			  if (constants.money_enabled){
-				  success_text += " Your earned the factory's and you can now sell them carbon at $"+this.coalTradePrice.toFixed(2)+"/unit!\n";
-
-			  }
-			  alert(success_text + "\n\nNow, can you build a better railway that brings 100 coal/minute to the factories?");
-			  return;
-		  }
-
-		  // FACTORY LEVEL UP: spawn new mine and increase level 
-		  // (coal for next level exponentially higher)
 		  if (this.isFactory() &&
 			  this.inventory.coal >= this.factory_coalForLevel(this.level)){
-			  if (Math.random() >= 0.5){
-				  this._scene._creator._createMines(1, this.level);
-				  this.level += 1;
-				  this.setTexture('factory2')
-				  this._scene.player.log(">["+this.name+"] is now a level "+this.level+" factory! It generated a level "+ (this.level - 1) + " mine")
-			  } else {
-				  this._scene.player.trainBuilder.newTrain(this.level)
-				  this.level += 1;
-				  this.setTexture('factory2')
-				  this._scene.player.log(">["+this.name+"] is now a level "+this.level+"factory! It generated a train with capacity " + (this.level  * 100))
-			  }
+			  //this._scene._creator._createMines(1, this.level);
+			  this.level += 1;
+			  this.setTexture('factory2')
+			  //this._scene.player.log(">["+this.name+"] is now a level "+this.level+" factory! It generated a level "+ (this.level - 1) + " mine")
 		  }
 	  }
 	  

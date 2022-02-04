@@ -1,6 +1,7 @@
 import * as constants from "./world/constants.js"
 
 import  {TrainBuilder}  from "./TrainBuilder.js";
+import  {MineBuilder}  from "./MineBuilder.js";
 
 /**
  * @solbiatialessandro
@@ -36,12 +37,14 @@ class Tutorial{
  * @solbiatialessandro
  */
 class Player {
-  constructor(moneyText, moneyPMText, goalText, _game) {
+  constructor(moneyText, moneyPMText, goalText, currencyText, _game) {
+	  this.currencyText = currencyText;
 	  this.money = 300;
 	  this.coal = 0;
+	  this.currency = 130;
 	  this.coal_earned = [];
 	  this.ownedTrains = 0;
-	this.ownedBuildings  = [];
+	  this.ownedBuildings  = [];
 	  this.moneyText = moneyText;
 	  this.moneyPMText = moneyPMText;
 	  this.moneyText.setText("$" + this.money.toFixed(1));
@@ -53,13 +56,18 @@ class Player {
 	  this.goalText.setPadding(16);
 	  this.goalText.setBackgroundColor("#0E5D93");
 	  this._game = _game;
-	this.treeFallingCount = 0;
+	  this.treeFallingCount = 0;
 	  this.trainBuilder = new TrainBuilder(
 			this._game.grid,
 			this._game.locomotiveGroup,
 			this._game,
 			0),
-        this.tutorial = new Tutorial(_game, this);
+	  this.mineBuilder = new MineBuilder(
+			this._game.grid,
+			this._game.locomotiveGroup,
+			this._game,
+			0),
+      this.tutorial = new Tutorial(_game, this);
       this.actions = [{
         'image': 'rail',
         'controller': this._game.railBuilder,
@@ -76,6 +84,13 @@ class Player {
 		  {
         'image': 'locomotive',
 		'controller': this.trainBuilder,
+		'quantity': 1,
+		'level': 0,
+      },
+
+		  {
+        'image': 'mine',
+		'controller': this.mineBuilder,
 		'quantity': 1,
 		'level': 0,
       }
@@ -107,7 +122,7 @@ class Player {
       frame.depth = 1100;
 	  if (action['image'] == 'locomotive'){
 	  	this._game._locomotiveBuilder = image;
-		  this.trainBuilder.newTrain(0)
+		 //this.trainBuilder.newTrain(0)
 	  }
       image.setScrollFactor(0);
       image.setInteractive();
@@ -132,7 +147,7 @@ class Player {
   }
 
   levelCompleted(cpm){
-	  this._game._creator._createFactories(1);
+	  this._game._creator._createFactories(1, this.level - 1); 
 	  this.levelUp();
 	  alert("Wow! Your railway is bringing to factories "+cpm+"coal/minute! You attracted new factories to move in the valley! Also.. you are now a level "+this.level+" railway engineer, congrats! \n\n Now, can you build a railway that brings to factories "+(this.cpm_target)+" coal/minute ?");
   }
@@ -173,6 +188,9 @@ class Player {
 	  if (this.level > 0 && this.levelUpCondition()){
 		  this.levelCompleted(cpm);
 	  }
+
+	  var t = "Steel: "+this.currency;
+	  this.currencyText.setText(t);
 
 
 	this.treeFallingCount += 1;

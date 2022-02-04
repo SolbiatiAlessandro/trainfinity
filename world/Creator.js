@@ -36,13 +36,16 @@ class Creator {
 */
 	var moneyText = new Phaser.GameObjects.Text(this._game, constants.TILESIZE, constants.TILESIZE * 3, "$0", {fontSize: '30px'});
 	var moneyPMText = new Phaser.GameObjects.Text(this._game, 0, 0, "0 coal/minute", {fontSize: '17px'});
+	var currencyText = new Phaser.GameObjects.Text(this._game, 0, 100, "", {fontSize: '17px'});
 	var goalText = new Phaser.GameObjects.Text(this._game, moneyPMText.width, 0, "⭐ Bring 100 units of coal to the factories ⭐", {fontSize: '17px', backgroundColor: 'black'});
 	goalText.depth = 1001
 	moneyPMText.depth = 1001
+	currencyText.depth = 1001
 	this._game.add.existing(moneyText);
 	this._game.add.existing(moneyPMText);
 	this._game.add.existing(goalText);
-	this._game.player = new Player(moneyText, moneyPMText, goalText, this._game);
+	this._game.add.existing(currencyText);
+	this._game.player = new Player(moneyText, moneyPMText, goalText, currencyText, this._game);
   }
 
   _createGrass() {
